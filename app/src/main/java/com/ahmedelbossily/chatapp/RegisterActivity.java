@@ -1,14 +1,24 @@
 package com.ahmedelbossily.chatapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -21,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText register_confirm_password;
 
     // Firebase instance variables
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // TODO: Get hold of an instance of FirebaseAuth
+        auth = FirebaseAuth.getInstance();
     }
 
     // Executed when Sign Up button is pressed.
@@ -89,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             // TODO: Call create FirebaseUser() here
+            createFirebaseUser();
         }
     }
 
@@ -99,15 +112,45 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Add own logic to check for a valid password (minimum 6 characters)
-        return true;
+        String confirmPassowrd = register_confirm_password.getText().toString();
+        return confirmPassowrd.equals(password) && password.length() > 4;
     }
 
     // TODO: Create a Firebase user
-
+    private void createFirebaseUser() {
+        String email = register_email.getText().toString();
+        String password = register_password.getText().toString();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d("ChatApp", "CreateUser onComplete: " + task.isSuccessful());
+                if (!task.isSuccessful()) {
+                    Log.d("ChatApp", "User creation failed");
+                    showErrorDialog("Registration attempt failed");
+                } else {
+                    saveDisplayName();
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 
     // TODO: Save the display name to Shared Preferences
-
+    private void saveDisplayName() {
+        String displayName = register_username.getText().toString();
+        SharedPreferences preferences = getSharedPreferences(CHAT_PREFS, 0);
+        preferences.edit().putString(DISPLAY_NAME_KEY, displayName).apply();
+    }
 
     // TODO: Create an alert dialog to show in case registration failed
-
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Oops")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 }

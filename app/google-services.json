@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "570114464651",
+    "firebase_url": "https://chatapp-28660.firebaseio.com",
+    "project_id": "chatapp-28660",
+    "storage_bucket": "chatapp-28660.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570114464651:android:c46dfa83081e2e4a",
+        "android_client_info": {
+          "package_name": "com.ahmedelbossily.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570114464651-5m26a0il43q7pknstes789k2gvoi2bjk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcaxzgByxotT3Pd0KyLVZWc_r7CM5K-AY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
